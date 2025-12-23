@@ -8,8 +8,20 @@ module.exports = async function (context, req) {
   }
 
   const b = req.body || {};
-  if (!b.mediaId || !b.blobName) {
-    context.res = { status: 400, body: "mediaId and blobName required" };
+  const postType = (b.postType || "image").toLowerCase();
+
+  if (!b.mediaId) {
+    context.res = { status: 400, body: "mediaId required" };
+    return;
+  }
+
+  // For image posts, we require blobName. For text posts, require textBody.
+  if (postType === "image" && !b.blobName) {
+    context.res = { status: 400, body: "blobName required for image posts" };
+    return;
+  }
+  if (postType === "text" && !String(b.textBody || "").trim()) {
+    context.res = { status: 400, body: "textBody required for text posts" };
     return;
   }
 
@@ -17,11 +29,13 @@ module.exports = async function (context, req) {
     id: b.mediaId,
     pk: "media",
     mediaId: b.mediaId,
+    postType, // "image" or "text"
     title: b.title || "",
     caption: b.caption || "",
     location: b.location || "",
     people: Array.isArray(b.people) ? b.people : [],
-    blobName: b.blobName,
+    blobName: postType === "image" ? b.blobName : null,
+    textBody: postType === "text" ? String(b.textBody || "") : null,
     createdAt: new Date().toISOString(),
     avgRating: 0,
     ratingCount: 0,

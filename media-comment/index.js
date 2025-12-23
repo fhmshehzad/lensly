@@ -1,4 +1,5 @@
 const { cosmosContainer } = require("../shared/shared");
+const { v4: uuid } = require("uuid");
 
 module.exports = async function (context, req) {
   const id = context.bindingData.id;
@@ -9,8 +10,12 @@ module.exports = async function (context, req) {
   if (!resource) { context.res = { status: 404, body: "Not found" }; return; }
 
   resource.comments = Array.isArray(resource.comments) ? resource.comments : [];
-  resource.comments.unshift({ text, createdAt: new Date().toISOString() });
-  resource.comments = resource.comments.slice(0, 50);
+  resource.comments.unshift({
+    commentId: uuid(),
+    text,
+    createdAt: new Date().toISOString()
+  });
+  resource.comments = resource.comments.slice(0, 100);
 
   await cosmosContainer().items.upsert(resource);
   context.res = { headers: { "Content-Type": "application/json" }, body: { ok: true } };

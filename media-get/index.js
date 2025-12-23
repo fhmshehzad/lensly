@@ -9,8 +9,12 @@ module.exports = async function (context, req) {
     return;
   }
 
+  const imageUrl = (resource.postType === "image" && resource.blobName)
+    ? makeReadUrl(resource.blobName)
+    : null;
+
   context.res = {
     headers: { "Content-Type": "application/json" },
-    body: { ...resource, imageUrl: makeReadUrl(resource.blobName) }
+    body: { ...resource, imageUrl }
   };
 };

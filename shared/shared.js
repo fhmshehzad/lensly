@@ -2,7 +2,8 @@ const { CosmosClient } = require("@azure/cosmos");
 const {
   StorageSharedKeyCredential,
   generateBlobSASQueryParameters,
-  BlobSASPermissions
+  BlobSASPermissions,
+  BlobServiceClient
 } = require("@azure/storage-blob");
 
 let cosmosClient;
@@ -13,7 +14,7 @@ function must(name) {
   return v;
 }
 
-// --- Cosmos ---
+// Cosmos
 function cosmosContainer() {
   if (!cosmosClient) {
     cosmosClient = new CosmosClient({
@@ -26,7 +27,7 @@ function cosmosContainer() {
     .container(must("COSMOS_CONTAINER"));
 }
 
-// --- Blob SAS (secure temp URLs) ---
+// Storage credentials
 function storageCred() {
   return new StorageSharedKeyCredential(
     must("STORAGE_ACCOUNT"),
@@ -34,6 +35,15 @@ function storageCred() {
   );
 }
 
+function blobServiceClient() {
+  const account = must("STORAGE_ACCOUNT");
+  return new BlobServiceClient(
+    `https://${account}.blob.core.windows.net`,
+    storageCred()
+  );
+}
+
+// SAS URLs
 function makeSasUrl(blobName, permissions, minutes) {
   const containerName = must("STORAGE_CONTAINER");
   const expiresOn = new Date(Date.now() + minutes * 60 * 1000);
@@ -52,13 +62,20 @@ function makeSasUrl(blobName, permissions, minutes) {
 }
 
 function makeUploadUrl(blobName) {
-  // create + write (client uploads directly to Blob)
+  // create + write
   return makeSasUrl(blobName, "cw", 10);
 }
 
 function makeReadUrl(blobName) {
-  // read-only SAS (so public users can view private blobs)
+  // read-only
   return makeSasUrl(blobName, "r", 120);
 }
 
-module.exports = { cosmosContainer, makeUploadUrl, makeReadUrl };
+async function deleteBlobIfExists(blobName) {
+  if (!blobName) return;
+  const container = blobServiceClient().getContainerClient(must("STORAGE_CONTAINER"));
+  const blob = container.getBlobClient(blobName);
+  await blob.deleteIfExists();
+}
+
+module.exports = { cosmosContainer, makeUploadUrl, makeReadUrl, deleteBlobIfExists };

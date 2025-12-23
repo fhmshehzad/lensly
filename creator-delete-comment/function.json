@@ -1,0 +1,6 @@
+{
+  "bindings": [
+    { "authLevel": "anonymous", "type": "httpTrigger", "direction": "in", "name": "req", "methods": ["delete"], "route": "creator/media/{id}/comment/{commentId}" },
+    { "type": "http", "direction": "out", "name": "res" }
+  ]
+}
