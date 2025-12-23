@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Lensly — Creator Upload</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .wrap{max-width:900px;margin:0 auto;padding:18px}
+    .panel{border:1px solid var(--border);background:var(--panel);border-radius:18px;padding:14px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+    .row{display:flex;gap:10px;align-items:center}
+    .row input{flex:1}
+    .preview{width:100%;max-height:420px;object-fit:cover;border-radius:14px;border:1px solid var(--border);background:#000}
+    textarea{width:100%;min-height:90px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--panel);color:var(--text);outline:none;resize:vertical}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">L</div>
+      <div>
+        <div class="brandTitle">Lensly</div>
+        <div class="brandSub">Creator upload</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="link" href="./">Home</a>
+      <a class="link" href="post.html?id=" onclick="return false" class="muted"></a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div class="notice">
+      <b>How it works:</b> Creator key → API returns SAS upload URL → browser uploads to private Blob → API commits metadata to Cosmos.
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <div class="small muted">Creator Key (only you have this)</div>
+        <input id="ckey" placeholder="Creator Key">
+
+        <div style="height:10px"></div>
+        <div class="small muted">Choose image</div>
+        <input id="file" type="file" accept="image/*">
+
+        <div style="height:12px"></div>
+        <img id="preview" class="preview" alt="preview" />
+      </div>
+
+      <div class="panel">
+        <div class="small muted">Title</div>
+        <input id="title" placeholder="e.g. Cloud-native upload demo">
+
+        <div style="height:10px"></div>
+        <div class="small muted">Location</div>
+        <input id="location" placeholder="e.g. Belfast">
+
+        <div style="height:10px"></div>
+        <div class="small muted">People (comma-separated)</div>
+        <input id="people" placeholder="e.g. Fahim, Alice">
+
+        <div style="height:10px"></div>
+        <div class="small muted">Caption</div>
+        <textarea id="caption" placeholder="Write a caption..."></textarea>
+
+        <div style="height:12px"></div>
+        <button id="uploadBtn">Upload</button>
+        <div id="msg" class="small muted" style="margin-top:10px"></div>
+
+        <pre id="out" class="small muted" style="white-space:pre-wrap;margin-top:10px"></pre>
+      </div>
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="creator.js"></script>
+</body>
+</html>

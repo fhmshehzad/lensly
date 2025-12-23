@@ -1,24 +1,58 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Lensly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Lensly — PhotoShare</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Lensly</h1>
-    <input id="q" placeholder="Search...">
-    <button id="search">Search</button>
-    <a href="/.auth/login/github">Login</a>
-    <a href="/creator.html">Creator</a>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">L</div>
+      <div>
+        <div class="brandTitle">Lensly</div>
+        <div class="brandSub">Cloud-native PhotoShare</div>
+      </div>
+    </div>
+
+    <div class="search">
+      <input id="q" placeholder="Search title, caption, location, people..." />
+      <button id="searchBtn">Search</button>
+    </div>
+
+    <nav class="nav">
+      <a class="link" href="creator.html">Creator Upload</a>
+      <a class="link" href="https://portal.azure.com" target="_blank" rel="noreferrer">Azure</a>
+    </nav>
   </header>
 
-  <main>
-    <div id="grid"></div>
-    <button id="more">Load more</button>
+  <main class="container">
+    <section class="hero">
+      <h1>Media feed</h1>
+      <p>Images are stored in <b>Azure Blob Storage</b>. Metadata/comments/ratings are stored in <b>Cosmos DB</b>. The UI calls a <b>serverless REST API</b> on Azure Functions.</p>
+      <div class="pillRow">
+        <div class="pill">⚡ Serverless API</div>
+        <div class="pill">🗃️ Cosmos DB</div>
+        <div class="pill">🖼️ Private Blob + SAS</div>
+      </div>
+    </section>
+
+    <section>
+      <div id="grid" class="grid"></div>
+
+      <div class="actions">
+        <button id="moreBtn">Load more</button>
+        <div id="status" class="small muted"></div>
+      </div>
+    </section>
   </main>
 
+  <footer class="footer">
+    <div class="muted small">Lensly • GitHub Pages frontend • Azure Functions REST API</div>
+  </footer>
+
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
