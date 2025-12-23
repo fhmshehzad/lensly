@@ -1,5 +1,10 @@
 {
-  "name": "photoshare-api",
+  "name": "photoshare-functions",
   "private": true,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "dependencies": {
+    "@azure/cosmos": "^4.2.0",
+    "@azure/storage-blob": "^12.26.0",
+    "uuid": "^9.0.1"
+  }
 }
