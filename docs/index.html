@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Lensly — PhotoShare</title>
+  <title>Lensly — Feed</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,29 +12,37 @@
       <div class="logo">L</div>
       <div>
         <div class="brandTitle">Lensly</div>
-        <div class="brandSub">Cloud-native PhotoShare</div>
+        <div class="brandSub">Images + Text posts • Serverless</div>
       </div>
     </div>
 
-    <div class="search">
-      <input id="q" placeholder="Search title, caption, location, people..." />
-      <button id="searchBtn">Search</button>
+    <div class="nav">
+      <a href="creator.html">Creator</a>
+      <a href="https://portal.azure.com" target="_blank" rel="noreferrer">Azure</a>
     </div>
-
-    <nav class="nav">
-      <a class="link" href="creator.html">Creator Upload</a>
-      <a class="link" href="https://portal.azure.com" target="_blank" rel="noreferrer">Azure</a>
-    </nav>
   </header>
 
   <main class="container">
     <section class="hero">
-      <h1>Media feed</h1>
-      <p>Images are stored in <b>Azure Blob Storage</b>. Metadata/comments/ratings are stored in <b>Cosmos DB</b>. The UI calls a <b>serverless REST API</b> on Azure Functions.</p>
-      <div class="pillRow">
-        <div class="pill">⚡ Serverless API</div>
-        <div class="pill">🗃️ Cosmos DB</div>
-        <div class="pill">🖼️ Private Blob + SAS</div>
+      <div>
+        <h1>Feed</h1>
+        <p>
+          Images are stored in <b>Private Blob Storage</b> and served with <b>SAS</b>.
+          Post metadata/comments/ratings live in <b>Cosmos DB</b>.
+          The frontend calls an <b>Azure Functions REST API</b>.
+        </p>
+
+        <div class="chips" id="chips">
+          <div class="chip active" data-type="all" data-sort="new">All (New)</div>
+          <div class="chip" data-type="image" data-sort="new">Images</div>
+          <div class="chip" data-type="text" data-sort="new">Text</div>
+          <div class="chip" data-type="all" data-sort="top">Top Rated</div>
+        </div>
+      </div>
+
+      <div class="searchRow">
+        <input id="q" placeholder="Search title/caption/location/people/text..." />
+        <button id="searchBtn">Search</button>
       </div>
     </section>
 
@@ -49,7 +57,7 @@
   </main>
 
   <footer class="footer">
-    <div class="muted small">Lensly • GitHub Pages frontend • Azure Functions REST API</div>
+    <div class="small muted">Lensly • GitHub Pages frontend • Azure Functions backend</div>
   </footer>
 
   <script src="config.js"></script>

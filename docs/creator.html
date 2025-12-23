@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Lensly — Creator Upload</title>
+  <title>Lensly — Creator</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .wrap{max-width:900px;margin:0 auto;padding:18px}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
     .panel{border:1px solid var(--border);background:var(--panel);border-radius:18px;padding:14px}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
-    .row{display:flex;gap:10px;align-items:center}
-    .row input{flex:1}
+    @media (max-width:980px){.grid2{grid-template-columns:1fr}}
     .preview{width:100%;max-height:420px;object-fit:cover;border-radius:14px;border:1px solid var(--border);background:#000}
-    textarea{width:100%;min-height:90px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--panel);color:var(--text);outline:none;resize:vertical}
+    textarea{width:100%;min-height:140px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--panel);color:var(--text);outline:none;resize:vertical}
+    .toggleRow{display:flex;gap:10px;margin-top:10px}
+    .toggle{flex:1;text-align:center}
   </style>
 </head>
 <body>
@@ -22,36 +22,47 @@
       <div class="logo">L</div>
       <div>
         <div class="brandTitle">Lensly</div>
-        <div class="brandSub">Creator upload</div>
+        <div class="brandSub">Creator (Admin)</div>
       </div>
     </div>
-    <nav class="nav">
-      <a class="link" href="./">Home</a>
-      <a class="link" href="post.html?id=" onclick="return false" class="muted"></a>
-    </nav>
+    <div class="nav">
+      <a href="./">Home</a>
+    </div>
   </header>
 
   <main class="wrap">
     <div class="notice">
-      <b>How it works:</b> Creator key → API returns SAS upload URL → browser uploads to private Blob → API commits metadata to Cosmos.
+      <b>Creator-only actions:</b> Upload Image Post, Create Text Post, Delete Posts, Delete Comments (via Creator Key).
     </div>
 
     <div class="grid2">
       <div class="panel">
-        <div class="small muted">Creator Key (only you have this)</div>
-        <input id="ckey" placeholder="Creator Key">
+        <div class="small muted">Creator Key</div>
+        <input id="ckey" placeholder="Creator Key (required)">
 
-        <div style="height:10px"></div>
-        <div class="small muted">Choose image</div>
-        <input id="file" type="file" accept="image/*">
+        <div class="toggleRow">
+          <button id="btnImage" class="toggle">Image Post</button>
+          <button id="btnText" class="toggle">Text Post</button>
+        </div>
 
-        <div style="height:12px"></div>
-        <img id="preview" class="preview" alt="preview" />
+        <div id="imageBox">
+          <div style="height:10px"></div>
+          <div class="small muted">Choose image</div>
+          <input id="file" type="file" accept="image/*">
+          <div style="height:12px"></div>
+          <img id="preview" class="preview" alt="preview"/>
+        </div>
+
+        <div id="textBox" style="display:none">
+          <div style="height:10px"></div>
+          <div class="small muted">Text body</div>
+          <textarea id="textBody" placeholder="Write your text post..."></textarea>
+        </div>
       </div>
 
       <div class="panel">
         <div class="small muted">Title</div>
-        <input id="title" placeholder="e.g. Cloud-native upload demo">
+        <input id="title" placeholder="e.g. Release notes / announcement">
 
         <div style="height:10px"></div>
         <div class="small muted">Location</div>
@@ -63,12 +74,12 @@
 
         <div style="height:10px"></div>
         <div class="small muted">Caption</div>
-        <textarea id="caption" placeholder="Write a caption..."></textarea>
+        <textarea id="caption" placeholder="Caption..."></textarea>
 
         <div style="height:12px"></div>
-        <button id="uploadBtn">Upload</button>
-        <div id="msg" class="small muted" style="margin-top:10px"></div>
+        <button id="uploadBtn">Publish</button>
 
+        <div id="msg" class="small muted" style="margin-top:10px"></div>
         <pre id="out" class="small muted" style="white-space:pre-wrap;margin-top:10px"></pre>
       </div>
     </div>

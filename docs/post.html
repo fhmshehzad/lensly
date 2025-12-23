@@ -6,16 +6,21 @@
   <title>Lensly — Post</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .postWrap{max-width:980px;margin:0 auto;padding:18px}
-    .postGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
-    @media (max-width:900px){.postGrid{grid-template-columns:1fr}}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    .grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    @media (max-width:980px){.grid2{grid-template-columns:1fr}}
     .panel{border:1px solid var(--border);background:var(--panel);border-radius:18px;padding:14px}
     .img{width:100%;max-height:560px;object-fit:cover;border-radius:14px;border:1px solid var(--border);display:block;background:#000}
+    .h2{margin:6px 0 2px;font-size:20px;font-weight:900}
+    .h3{margin:14px 0 8px}
     .row{display:flex;gap:10px;align-items:center}
     .row input{flex:1}
-    .h2{margin:6px 0 2px;font-size:20px}
-    .h3{margin:14px 0 8px}
-    .comment{padding:8px 10px;border:1px solid var(--border);border-radius:14px;background:rgba(15,26,51,.6);margin:8px 0}
+    .comment{padding:8px 10px;border:1px solid var(--border);border-radius:14px;background:rgba(15,26,51,.6);margin:8px 0;display:flex;justify-content:space-between;gap:10px;align-items:center}
+    .danger{border-color:rgba(252,165,165,.35)}
+    .dangerBtn{border-color:rgba(252,165,165,.35)}
+    .dangerBtn:hover{border-color:rgba(252,165,165,.65)}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    textarea{width:100%;min-height:120px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--panel);color:var(--text);outline:none;resize:vertical}
   </style>
 </head>
 <body>
@@ -24,22 +29,20 @@
       <div class="logo">L</div>
       <div>
         <div class="brandTitle">Lensly</div>
-        <div class="brandSub">Post details</div>
+        <div class="brandSub">Post</div>
       </div>
     </div>
-    <nav class="nav">
-      <a class="link" href="./">Home</a>
-      <a class="link" href="creator.html">Creator Upload</a>
-    </nav>
+    <div class="nav">
+      <a href="./">Home</a>
+      <a href="creator.html">Creator</a>
+    </div>
   </header>
 
-  <main class="postWrap">
+  <main class="wrap">
     <div id="status" class="notice">Loading...</div>
 
-    <div class="postGrid">
-      <div class="panel">
-        <img id="img" class="img" alt="post image"/>
-      </div>
+    <div class="grid2">
+      <div class="panel" id="leftPanel"></div>
 
       <div class="panel">
         <div class="h2" id="title"></div>
@@ -62,6 +65,13 @@
 
         <div class="h3">Comments</div>
         <div id="comments"></div>
+
+        <div class="h3">Admin (Creator Key)</div>
+        <input id="ckey" placeholder="Creator Key (for delete)">
+        <div class="row" style="margin-top:10px">
+          <button id="deletePostBtn" class="dangerBtn">Delete Post</button>
+          <div class="small muted mono" id="adminHint"></div>
+        </div>
       </div>
     </div>
   </main>
@@ -71,6 +81,8 @@
     const id = new URLSearchParams(location.search).get("id");
     const statusEl = document.getElementById("status");
     const msgEl = document.getElementById("msg");
+    const leftPanel = document.getElementById("leftPanel");
+    const adminHint = document.getElementById("adminHint");
 
     function esc(s){
       return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
@@ -87,22 +99,63 @@
       statusEl.textContent = text || "";
     }
 
+    function creatorKeyHeader(){
+      const k = document.getElementById("ckey").value.trim();
+      return k ? { "x-creator-key": k } : {};
+    }
+
     async function load(){
       try{
-        if(!id) throw new Error("Missing id in URL");
+        if(!id) throw new Error("Missing id");
         setStatus("", "Loading...");
+
         const p = await api(`/media/${encodeURIComponent(id)}`);
 
-        document.getElementById("img").src = p.imageUrl;
-        document.getElementById("title").textContent = p.title || "Untitled";
+        // Left panel render: image OR text
+        if ((p.postType || "image") === "image") {
+          leftPanel.innerHTML = `<img class="img" src="${p.imageUrl}" alt="${esc(p.title||"post")}">`;
+        } else {
+          leftPanel.innerHTML = `
+            <div class="notice good">
+              <div style="font-weight:900;font-size:22px">${esc(p.title || "Text Post")}</div>
+              <div class="small muted" style="margin-top:6px">${esc(p.location || "")}</div>
+              <div style="margin-top:10px;line-height:1.35">${esc(p.textBody || "")}</div>
+            </div>
+          `;
+        }
+
+        document.getElementById("title").textContent = p.title || (p.postType==="text" ? "Text Post" : "Untitled");
         document.getElementById("caption").textContent = p.caption || "";
 
         const stars = `⭐ ${(Number(p.avgRating||0)).toFixed(1)} (${p.ratingCount||0})`;
         const loc = p.location ? ` • ${p.location}` : "";
         document.getElementById("meta").textContent = `${stars}${loc}`;
 
-        const list = (p.comments || []).map(c => `<div class="comment small">• ${esc(c.text)}</div>`).join("");
-        document.getElementById("comments").innerHTML = list || `<div class="small muted">No comments yet.</div>`;
+        const comments = (p.comments || []);
+        const html = comments.map(c => `
+          <div class="comment ${document.getElementById("ckey").value.trim() ? "danger" : ""}">
+            <div class="small">• ${esc(c.text)}</div>
+            ${c.commentId ? `<button class="dangerBtn" data-cid="${esc(c.commentId)}" style="display:${document.getElementById("ckey").value.trim() ? "inline-block" : "none"}">Delete</button>` : ""}
+          </div>
+        `).join("");
+
+        document.getElementById("comments").innerHTML = html || `<div class="small muted">No comments yet.</div>`;
+
+        // Wire delete comment buttons (admin only)
+        document.querySelectorAll("button[data-cid]").forEach(btn => {
+          btn.onclick = async () => {
+            try{
+              const cid = btn.getAttribute("data-cid");
+              const headers = creatorKeyHeader();
+              if(!headers["x-creator-key"]) throw new Error("Enter Creator Key first");
+              await api(`/creator/media/${encodeURIComponent(id)}/comment/${encodeURIComponent(cid)}`, { method:"DELETE", headers });
+              msgEl.textContent = "✅ Comment deleted";
+              await load();
+            }catch(e){
+              msgEl.textContent = "❌ " + e;
+            }
+          };
+        });
 
         setStatus("good", "Loaded.");
       }catch(e){
@@ -144,6 +197,22 @@
         msgEl.textContent = "❌ " + e;
       }
     };
+
+    document.getElementById("deletePostBtn").onclick = async () => {
+      try{
+        const headers = creatorKeyHeader();
+        if(!headers["x-creator-key"]) throw new Error("Enter Creator Key first");
+        adminHint.textContent = "Deleting...";
+        await api(`/creator/media/${encodeURIComponent(id)}`, { method:"DELETE", headers });
+        adminHint.textContent = "Deleted";
+        location.href = "./";
+      }catch(e){
+        adminHint.textContent = "";
+        msgEl.textContent = "❌ " + e;
+      }
+    };
+
+    document.getElementById("ckey").addEventListener("input", () => load());
 
     load();
   </script>
