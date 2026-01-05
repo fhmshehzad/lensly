@@ -15,12 +15,12 @@ module.exports = async function (context, req) {
     return;
   }
 
-  // Delete blob if image post
+  //delete blob
   if ((resource.postType || "image") === "image" && resource.blobName) {
     await deleteBlobIfExists(resource.blobName);
   }
 
-  // Delete cosmos item
+  //delete cosmos entry
   await cosmosContainer().item(id, "media").delete();
 
   context.res = {
