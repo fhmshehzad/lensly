@@ -49,13 +49,13 @@
         <div class="small muted" id="meta"></div>
         <p class="muted" id="caption" style="margin-top:10px;line-height:1.35"></p>
 
-        <div class="h3">⭐ Rating</div>
+        <div class="h3">Rating</div>
         <div class="row">
           <input id="rating" placeholder="Enter 1-5">
           <button id="rateBtn">Submit</button>
         </div>
 
-        <div class="h3">💬 Comment</div>
+        <div class="h3">Comment</div>
         <div class="row">
           <input id="comment" placeholder="Write a comment...">
           <button id="commentBtn">Send</button>
@@ -111,7 +111,6 @@
 
         const p = await api(`/media/${encodeURIComponent(id)}`);
 
-        // Left panel render: image OR text
         if ((p.postType || "image") === "image") {
           leftPanel.innerHTML = `<img class="img" src="${p.imageUrl}" alt="${esc(p.title||"post")}">`;
         } else {
@@ -127,7 +126,7 @@
         document.getElementById("title").textContent = p.title || (p.postType==="text" ? "Text Post" : "Untitled");
         document.getElementById("caption").textContent = p.caption || "";
 
-        const stars = `⭐ ${(Number(p.avgRating||0)).toFixed(1)} (${p.ratingCount||0})`;
+        const stars = ` ${(Number(p.avgRating||0)).toFixed(1)} (${p.ratingCount||0})`;
         const loc = p.location ? ` • ${p.location}` : "";
         document.getElementById("meta").textContent = `${stars}${loc}`;
 
@@ -141,7 +140,6 @@
 
         document.getElementById("comments").innerHTML = html || `<div class="small muted">No comments yet.</div>`;
 
-        // Wire delete comment buttons (admin only)
         document.querySelectorAll("button[data-cid]").forEach(btn => {
           btn.onclick = async () => {
             try{
@@ -149,10 +147,10 @@
               const headers = creatorKeyHeader();
               if(!headers["x-creator-key"]) throw new Error("Enter Creator Key first");
               await api(`/creator/media/${encodeURIComponent(id)}/comment/${encodeURIComponent(cid)}`, { method:"DELETE", headers });
-              msgEl.textContent = "✅ Comment deleted";
+              msgEl.textContent = " Comment deleted";
               await load();
             }catch(e){
-              msgEl.textContent = "❌ " + e;
+              msgEl.textContent = " " + e;
             }
           };
         });
@@ -173,11 +171,11 @@
           headers:{ "Content-Type":"application/json" },
           body: JSON.stringify({ text })
         });
-        msgEl.textContent = "✅ Comment added";
+        msgEl.textContent = " Comment added";
         document.getElementById("comment").value = "";
         await load();
       }catch(e){
-        msgEl.textContent = "❌ " + e;
+        msgEl.textContent = " " + e;
       }
     };
 
@@ -191,10 +189,10 @@
           headers:{ "Content-Type":"application/json" },
           body: JSON.stringify({ rating })
         });
-        msgEl.textContent = `✅ Rated. Avg now: ${Number(r.avgRating).toFixed(2)} (${r.ratingCount})`;
+        msgEl.textContent = ` Rated. Avg now: ${Number(r.avgRating).toFixed(2)} (${r.ratingCount})`;
         await load();
       }catch(e){
-        msgEl.textContent = "❌ " + e;
+        msgEl.textContent = " " + e;
       }
     };
 
@@ -208,7 +206,7 @@
         location.href = "./";
       }catch(e){
         adminHint.textContent = "";
-        msgEl.textContent = "❌ " + e;
+        msgEl.textContent = " " + e;
       }
     };
 
