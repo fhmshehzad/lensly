@@ -1,4 +1,4 @@
-const { v4: uuid } = require("uuid");
+const { v4: uuid } = require("uuid"); //uuid from az portal
 const { makeUploadUrl } = require("../shared/shared");
 
 module.exports = async function (context, req) {
