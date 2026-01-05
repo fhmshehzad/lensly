@@ -27,7 +27,7 @@ function setStatus(msg) { statusEl.textContent = msg || ""; }
 
 function imageCard(m) {
   const title = (m.title || "Untitled").trim() || "Untitled";
-  const stars = `⭐ ${Number(m.avgRating || 0).toFixed(1)} (${m.ratingCount || 0})`;
+  const stars = ` ${Number(m.avgRating || 0).toFixed(1)} (${m.ratingCount || 0})`;
   return `
     <div class="card" data-id="${m.mediaId}">
       <img src="${m.imageUrl}" alt="${esc(title)}">
@@ -45,7 +45,7 @@ function imageCard(m) {
 
 function textCard(m) {
   const title = (m.title || "Text Post").trim() || "Text Post";
-  const stars = `⭐ ${Number(m.avgRating || 0).toFixed(1)} (${m.ratingCount || 0})`;
+  const stars = ` ${Number(m.avgRating || 0).toFixed(1)} (${m.ratingCount || 0})`;
   return `
     <div class="card" data-id="${m.mediaId}">
       <div class="textCard">
