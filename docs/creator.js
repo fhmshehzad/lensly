@@ -121,6 +121,6 @@ document.getElementById("uploadBtn").onclick = async () => {
     setOut({ commit });
 
   }catch(e){
-    setMsg("❌ " + e);
+    setMsg(" " + e);
   }
 };
