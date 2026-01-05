@@ -15,7 +15,7 @@ module.exports = async function (context, req) {
     return;
   }
 
-  // For image posts, we require blobName. For text posts, require textBody.
+  // blobName for images and textBody for text posts
   if (postType === "image" && !b.blobName) {
     context.res = { status: 400, body: "blobName required for image posts" };
     return;
@@ -29,7 +29,7 @@ module.exports = async function (context, req) {
     id: b.mediaId,
     pk: "media",
     mediaId: b.mediaId,
-    postType, // "image" or "text"
+    postType, //image or text
     title: b.title || "",
     caption: b.caption || "",
     location: b.location || "",
