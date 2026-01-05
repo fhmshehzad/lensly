@@ -1,5 +1,4 @@
 const { cosmosContainer, makeReadUrl } = require("../shared/shared");
-
 module.exports = async function (context, req) {
   const id = context.bindingData.id;
 
