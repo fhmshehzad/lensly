@@ -8,6 +8,7 @@
       "methods": ["post"],
       "route": "creator/commit"
     },
+    
     { "type": "http", "direction": "out", "name": "res" }
   ]
 }
