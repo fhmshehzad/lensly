@@ -14,7 +14,6 @@ function must(name) {
   return v;
 }
 
-// Cosmos
 function cosmosContainer() {
   if (!cosmosClient) {
     cosmosClient = new CosmosClient({
@@ -27,7 +26,6 @@ function cosmosContainer() {
     .container(must("COSMOS_CONTAINER"));
 }
 
-// Storage credentials
 function storageCred() {
   return new StorageSharedKeyCredential(
     must("STORAGE_ACCOUNT"),
@@ -43,7 +41,6 @@ function blobServiceClient() {
   );
 }
 
-// SAS URLs
 function makeSasUrl(blobName, permissions, minutes) {
   const containerName = must("STORAGE_CONTAINER");
   const expiresOn = new Date(Date.now() + minutes * 60 * 1000);
@@ -62,12 +59,12 @@ function makeSasUrl(blobName, permissions, minutes) {
 }
 
 function makeUploadUrl(blobName) {
-  // create + write
+  
   return makeSasUrl(blobName, "cw", 10);
 }
 
 function makeReadUrl(blobName) {
-  // read-only
+  
   return makeSasUrl(blobName, "r", 120);
 }
 
