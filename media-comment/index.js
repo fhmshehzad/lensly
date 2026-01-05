@@ -16,7 +16,6 @@ module.exports = async function (context, req) {
     createdAt: new Date().toISOString()
   });
   resource.comments = resource.comments.slice(0, 100);
-
   await cosmosContainer().items.upsert(resource);
   context.res = { headers: { "Content-Type": "application/json" }, body: { ok: true } };
 };
