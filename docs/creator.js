@@ -8,7 +8,7 @@ const textBox = document.getElementById("textBox");
 const btnImage = document.getElementById("btnImage");
 const btnText = document.getElementById("btnText");
 
-let mode = "image"; // "image" or "text"
+let mode = "image";
 
 function setMsg(t){ msg.textContent = t || ""; }
 function setOut(obj){ out.textContent = obj ? JSON.stringify(obj, null, 2) : ""; }
@@ -93,16 +93,16 @@ document.getElementById("uploadBtn").onclick = async () => {
         })
       });
 
-      setMsg("✅ Image post published. Go Home and refresh.");
+      setMsg("Image posted. Go Home and refresh.");
       setOut({ init, commit });
       return;
     }
 
-    // TEXT MODE
+    //for text posts
     const textBody = document.getElementById("textBody").value.trim();
     if(!textBody) throw new Error("Write text body first");
 
-    // Make a mediaId client-side (simple unique-ish). Backend stores it.
+    //text mediaid is created
     const mediaId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
 
     setMsg("Publishing text post...");
@@ -117,7 +117,7 @@ document.getElementById("uploadBtn").onclick = async () => {
       })
     });
 
-    setMsg("✅ Text post published. Go Home and refresh.");
+    setMsg("Text poste. Go Home and refresh.");
     setOut({ commit });
 
   }catch(e){
