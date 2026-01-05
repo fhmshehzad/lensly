@@ -1,5 +1,4 @@
 const { cosmosContainer } = require("../shared/shared");
-
 module.exports = async function (context, req) {
   const creatorKey = req.headers["x-creator-key"];
   if (!creatorKey || creatorKey !== process.env.CREATOR_KEY) {
