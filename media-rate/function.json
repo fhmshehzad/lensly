@@ -1,4 +1,3 @@
-
 {
   "bindings": [
     { "authLevel": "anonymous", "type": "httpTrigger", "direction": "in", "name": "req", "methods": ["post"], "route": "media/{id}/rate" },
