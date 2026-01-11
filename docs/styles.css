@@ -9,7 +9,6 @@
   --good:#86efac;
   --bad:#fca5a5;
 }
-
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;background:var(--bg);color:var(--text)}
 a{color:var(--accent);text-decoration:none}
